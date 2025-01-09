@@ -16,6 +16,12 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
+const userRoutes = require('./routes/userRoutes');
+
+// Use routes
+app.use('/api/users', userRoutes);
+
+
 const { Pool } = require('pg');
 const pool = new Pool({
     user: process.env.DB_USER,
