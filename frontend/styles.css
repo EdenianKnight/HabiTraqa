@@ -33,3 +33,12 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+    }
+    nav button {
+        margin: 5px;
+    }
+}
