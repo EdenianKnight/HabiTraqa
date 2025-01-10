@@ -1,123 +1,104 @@
+// DOM Elements
 const guestForm = document.getElementById('guest-form');
 const habitList = document.getElementById('habit-list');
-const loginBtn = document.getElementById('login-btn');
-const registerBtn = document.getElementById('register-btn');
-const userSection = document.getElementById('user-section');
-const guestMode = document.getElementById('guest-mode');
-const logoutBtn = document.getElementById('logout-btn');
-const habitForm = document.getElementById('habit-form');
-const userHabitList = document.getElementById('user-habit-list');
+const loginButton = document.getElementById('login-btn');
+const registerButton = document.getElementById('register-btn');
 
-let token = null;
+// Event Listeners
+guestForm.addEventListener('submit', addHabit);
+loginButton.addEventListener('click', navigateToLogin);
+registerButton.addEventListener('click', navigateToRegister);
 
-// Add Habit for Guest
-guestForm.addEventListener('submit', (e) => {
+// Add Habit Function (Guest Mode)
+function addHabit(e) {
     e.preventDefault();
-    const habitName = document.getElementById('habit-name').value;
-    if (habitName.trim()) {
+    const habitName = document.getElementById('habit-name').value.trim();
+    if (habitName) {
         const li = document.createElement('li');
         li.textContent = habitName;
+
+        // Add remove button
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.classList.add('remove-btn');
+        removeButton.addEventListener('click', () => li.remove());
+
+        li.appendChild(removeButton);
         habitList.appendChild(li);
         document.getElementById('habit-name').value = '';
     }
-});
+}
 
-// Show Login/Register Form (Mock)
-loginBtn.addEventListener('click', () => {
-    const email = prompt('Enter your email:');
-    const password = prompt('Enter your password:');
-    loginUser(email, password);
-});
+// Navigation Functions
+function navigateToLogin() {
+    window.location.href = 'login.html';
+}
 
-registerBtn.addEventListener('click', () => {
-    const name = prompt('Enter your name:');
-    const email = prompt('Enter your email:');
-    const password = prompt('Enter your password:');
-    registerUser(name, email, password);
-});
+function navigateToRegister() {
+    window.location.href = 'signup.html';
+}
 
-// Logout User
-logoutBtn.addEventListener('click', () => {
-    token = null;
-    userSection.style.display = 'none';
-    guestMode.style.display = 'block';
-});
+// Utility Function: Display Habits (If persisted)
+function displayHabits(habits) {
+    habits.forEach((habit) => {
+        const li = document.createElement('li');
+        li.textContent = habit.name;
 
-// Add Habit for Authenticated User
-habitForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const habitName = document.getElementById('auth-habit-name').value;
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.classList.add('remove-btn');
+        removeButton.addEventListener('click', () => li.remove());
 
-    if (habitName.trim()) {
-        addHabit(habitName);
-        document.getElementById('auth-habit-name').value = '';
-    }
-});
+        li.appendChild(removeButton);
+        habitList.appendChild(li);
+    });
+}
 
-// Backend Communication
-const registerUser = async (name, email, password) => {
-    try {
-        const response = await fetch('http://localhost:5000/api/users/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password }),
-        });
-        const data = await response.json();
-        alert('Registration Successful');
-    } catch (error) {
-        alert('Registration Failed');
-    }
-};
-
-const loginUser = async (email, password) => {
-    try {
-        const response = await fetch('http://localhost:5000/api/users/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
-        });
-        const data = await response.json();
-        token = data.token;
-        loadHabits();
-        guestMode.style.display = 'none';
-        userSection.style.display = 'block';
-    } catch (error) {
-        alert('Login Failed');
-    }
-};
-
-const loadHabits = async () => {
+// Placeholder for integration with backend (API Calls)
+async function fetchHabits() {
     try {
         const response = await fetch('http://localhost:5000/api/habits', {
-            headers: { Authorization: `Bearer ${token}` },
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('token')}`, // JWT token
+            },
         });
-        const habits = await response.json();
-        userHabitList.innerHTML = '';
-        habits.forEach((habit) => {
-            const li = document.createElement('li');
-            li.textContent = habit.name;
-            userHabitList.appendChild(li);
-        });
-    } catch (error) {
-        console.error('Error loading habits:', error);
-    }
-};
 
-const addHabit = async (name) => {
+        if (response.ok) {
+            const data = await response.json();
+            displayHabits(data.habits);
+        } else {
+            console.error('Failed to fetch habits');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function addHabitToServer(habitName) {
     try {
         const response = await fetch('http://localhost:5000/api/habits', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
-            body: JSON.stringify({ name }),
+            body: JSON.stringify({ name: habitName }),
         });
-        const newHabit = await response.json();
-        const li = document.createElement('li');
-        li.textContent = newHabit.name;
-        userHabitList.appendChild(li);
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Habit added:', data);
+        } else {
+            console.error('Failed to add habit');
+        }
     } catch (error) {
-        console.error('Error adding habit:', error);
+        console.error('Error:', error);
     }
-};
+}
+
+// Call fetchHabits if user is authenticated
+if (localStorage.getItem('token')) {
+    fetchHabits();
+}
