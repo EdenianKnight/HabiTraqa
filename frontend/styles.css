@@ -1,15 +1,36 @@
+/* General Styling */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    background-color: #f9f9f9;
 }
 
 header {
-    background: #4CAF50;
+    background-color: #4CAF50;
     color: white;
-    padding: 10px;
+    padding: 20px;
     text-align: center;
+}
+
+header nav {
+    margin-top: 10px;
+}
+
+header button {
+    background-color: white;
+    color: #4CAF50;
+    border: none;
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+header button:hover {
+    background-color: #e8f5e9;
 }
 
 main {
@@ -17,7 +38,28 @@ main {
 }
 
 form {
-    margin: 10px 0;
+    margin-bottom: 20px;
+}
+
+form input {
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 200px;
+}
+
+form button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #45a049;
 }
 
 ul {
@@ -25,20 +67,19 @@ ul {
     padding: 0;
 }
 
+ul li {
+    background-color: white;
+    margin: 5px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
 footer {
-    background: #f1f1f1;
+    background-color: #f1f1f1;
     text-align: center;
     padding: 10px;
     position: fixed;
     bottom: 0;
     width: 100%;
-}
-
-@media (max-width: 600px) {
-    header {
-        flex-direction: column;
-    }
-    nav button {
-        margin: 5px;
-    }
 }
