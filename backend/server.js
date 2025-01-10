@@ -1,34 +1,25 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-require('dotenv').config();
+const dotenv = require('dotenv');
+const userRoutes = require('./routes/userRoutes');
+const habitRoutes = require('./routes/habitRoutes');
 
+dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// Routes Placeholder
+// Routes
+app.use('/api/users', userRoutes);
+app.use('/api/habits', habitRoutes);
+
 app.get('/', (req, res) => {
     res.send('HabiTraqa API is running');
 });
 
+// Start Server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-const userRoutes = require('./routes/userRoutes');
-
-// Use routes
-app.use('/api/users', userRoutes);
-
-
-const { Pool } = require('pg');
-const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASS,
-    port: process.env.DB_PORT,
-});
-
-module.exports = pool;
