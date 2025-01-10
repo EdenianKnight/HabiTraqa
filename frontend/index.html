@@ -16,12 +16,21 @@
     </header>
     <main>
         <section id="guest-mode">
-            <h2>Guest Mode</h2>
+            <h2>Track Habits as a Guest</h2>
             <form id="guest-form">
-                <input type="text" id="habit-name" placeholder="Enter habit name">
+                <input type="text" id="habit-name" placeholder="Enter habit name" required>
                 <button type="submit">Add Habit</button>
             </form>
             <ul id="habit-list"></ul>
+        </section>
+        <section id="user-section" style="display: none;">
+            <h2>Your Habits</h2>
+            <form id="habit-form">
+                <input type="text" id="auth-habit-name" placeholder="Enter habit name" required>
+                <button type="submit">Add Habit</button>
+            </form>
+            <ul id="user-habit-list"></ul>
+            <button id="logout-btn">Logout</button>
         </section>
     </main>
     <footer>
